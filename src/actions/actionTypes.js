@@ -7,7 +7,7 @@
  */
 
 // 应用app相关action
-export const APP_FETCH = 'APP_FETCH';
+export const APP_FETCH = 'APP_FETCH'; // 数据请求
 export const APP_FECTH_PENDING = 'APP_FECTH_PENDING'; // 请求等待
 export const APP_FETCH_FAILURE = 'APP_FETCH_FAILURE'; // 请求失败
 export const APP_RESET_ERROR = 'APP_RESET_ERROR'; // 重置错误
