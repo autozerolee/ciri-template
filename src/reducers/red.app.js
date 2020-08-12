@@ -3,7 +3,8 @@ import * as ActionTypes from '../actions/actionTypes';
 const initialState = {
   pending: false,
   error: '',
-  config: null
+  config: null,
+  count: 0
 }
 
 const app = (state = initialState, action) => {
@@ -17,6 +18,12 @@ const app = (state = initialState, action) => {
     }
     case ActionTypes.APP_RESET_ERROR: {
       return Object.assign({}, state, { config: payload }); // 此处可能存在对象引用
+    }
+    case "INCREMENT": {
+      return Object.assign({}, state, { count: ++state.count });
+    }
+    case "DECREMENT": {
+      return Object.assign({}, state, { count: --state.count });
     }
     default: return state;
   }

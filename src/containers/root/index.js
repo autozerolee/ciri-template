@@ -1,20 +1,45 @@
 import React from 'react';
-import { Provider } from "react-redux";
+import { Provider, connect } from "react-redux";
 
 import store from './configStore.js';
 
-class Root extends React.Component {
+const mapStateToProps = (state) => ({ value: state.app.count });
+const mapDispatchToProps = (dispatch) => ({
+  onIncrement: () => dispatch({ type: "INCREMENT" }),
+  onDecrement: () => dispatch({ type: "DECREMENT" }),
+  onIncrementAsync: () => dispatch({ type: "INCREMENT_ASYNC" })
+});
 
-  render() {
-    console.log('root render!');
-    // 默认展示 /app，若未验证，则跳转至 /login
+const _Counter = function({ value, onIncrement, onDecrement, onIncrementAsync }) {
+  return (
+    <div>
+      <button onClick={onIncrement}>
+        Increment
+      </button>
+      {' '}
+      <button onClick={onDecrement}>
+        Decrement
+      </button>
+      {' '}
+      <button onClick={onIncrementAsync}>
+        Async Increment
+      </button>
+      <hr />
+      <div>
+        Clicked: {value} times
+      </div>
+    </div>
+  )
+}
 
-    return (
-      <Provider store={store}>
-        <div>Root Containers</div>
-      </Provider>
-    )
-  }
+const Counter = connect(mapStateToProps, mapDispatchToProps)(React.memo(_Counter));
+
+const Root = function() {
+  return (
+    <Provider store={store}>
+      <Counter />
+    </Provider>
+  )
 }
 
 export default Root;
