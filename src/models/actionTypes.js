@@ -7,9 +7,10 @@
  */
 
 // 应用app相关action
-export const APP_FETCH = 'APP_FETCH'; // 数据请求
-export const APP_FECTH_PENDING = 'APP_FECTH_PENDING'; // 请求等待
+export const APP_FECTH_PENDING = 'APP_FECTH_PENDING'; // 发起请求
+export const APP_FETCH_SUCCESS = 'APP_FETCH_SUCCESS'; // 请求成功
 export const APP_FETCH_FAILURE = 'APP_FETCH_FAILURE'; // 请求失败
+
 export const APP_RESET_ERROR = 'APP_RESET_ERROR'; // 重置错误
 export const APP_GET_CONFIG = 'APP_GET_CONFIG'; // 获取系统配置
 
