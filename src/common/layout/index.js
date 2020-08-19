@@ -13,6 +13,8 @@ const UserLogin = function() {
   return (
     <LoginForm 
       onSubmit={(userData) => {
+        // 提供 promise middlewares
+        // 触发时只需触发指定 action type, 
         new Promise((resolve, reject) => {
           dispatch({
             type: SIGNER_SIGN_IN,

@@ -3,7 +3,7 @@ import * as ActionTypes from './actionTypes';
 import { getAppConfig } from '../services/signer';
 
 export default {
-  namespace: "app",
+  namespace: "system",
   state: {
     pending: false,
     error: { code: null, msg: '' },
@@ -24,7 +24,7 @@ export default {
     }    
   },
   reducers: {
-    FETCH_INIT(state) {
+    fetchInit(state) {
       return { ...state, pending: true };
     },
     fetchFinish(state) {

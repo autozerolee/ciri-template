@@ -1,9 +1,9 @@
 /**
- * ActionType全大写
+ * state action ActionType全大写
  * 命名规则：{entity实体}_{action行为}_{effect作用}
  * entity: 实体，与model对应，反应在redux-store中
  * action: 实体进行的行为，动词副词
- * effect: 行为的作用，副词名词 可不写
+ * effect: 作用结果，副词形容词名词 非必填
  */
 
 // 应用app相关action
