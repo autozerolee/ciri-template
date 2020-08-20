@@ -1,4 +1,4 @@
-import { call, put } from 'redux-saga/effects';
+import { call, put, takeEvery } from 'redux-saga/effects';
 import * as ActionTypes from './actionTypes';
 import { signIn, signOut } from '../services/signer';
 
@@ -9,21 +9,25 @@ export default {
     userInfo: {}
   },
   effects: {
-    *signIn({ payload }) {
-      const { userData, resolve, reject } = payload;
+    *main() {
+      yield takeEvery('signer/signin', this.signIn);
+    },
+    *signIn(action) {
+      const { loginName } = action.payload;
       yield put({ type: 'showLoading' });
-      const res = yield call(signIn, userData);
-      if(res && res.success) {
-        let userInfo = res.data;
-        yield sessionStorage.setItem('@INFO', JSON.stringify(userInfo));
-        yield put({ 
-          type: ActionTypes.SIGNER_SIGN_IN,
-          payload: userInfo
-        });
-        resolve();
-      }else {
-        reject(data);
-      }
+      const res = yield call(signIn, loginName); // promise
+      console.log(res);
+      // if(res && res.success) {
+      //   let userInfo = res.data;
+      //   yield sessionStorage.setItem('@INFO', JSON.stringify(userInfo));
+      //   yield put({ 
+      //     type: ActionTypes.SIGNER_SIGN_IN,
+      //     payload: userInfo
+      //   });
+      //   resolve();
+      // }else {
+      //   reject(data);
+      // }
     },
     *signOut({ payload }) {
       const { resolve, reject } = payload;
@@ -37,9 +41,6 @@ export default {
       }else {
         reject(data)
       }
-    },
-    *changePwd({ payload }) {
-      
     }
   },
   reducers: {

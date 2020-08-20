@@ -7,65 +7,39 @@
  * 5. 导出model 挂载方法
  * 6. 执行得到最终 redux-store 并导出
  */
-
-import { createStore, applyMiddleware, compose } from 'redux';
+import createStore from './createStore';
 import createSagaMiddleware from 'redux-saga';
-
-const sagaMiddleWare = createSagaMiddleware(); // saga 中间件
-const promiseMiddleware = createPromisMiddleware(); // promise 中间件
+import createPromisMiddleware from './createPromiseMiddleware';
+import getReducer from './getReducer';
+import getSaga from './getSaga';
 
 /**
  * create redux store by models.
  * @param {Array<Model: (namepace, state, ?effects, reducers)>} models
- * @returns {*} store
+ * @returns {Object} store
  */
 function create(models) {
+  const sagaMiddleware = createSagaMiddleware(); // saga 中间件
+  // const promiseMiddleware = createPromisMiddleware(); // promise 中间件
+  const middlewares = [sagaMiddleware]; // 之后可以继续添加middleware
+
   const sagas = [];
   const reducers = {};
 
   for (const m of models) {
-    reducers[m.namespace] = getReducer(m.reducers, m.state, plugin._handleActions);
-    if (m.effects) {
-      sagas.push(getSaga(m.effects, m, onError, plugin.get('onEffect'), hooksAndOpts));
+    reducers[m.namespace] = getReducer(m.reducers, m.state);
+    if(m.effects && m.effects.main) {
+      sagas.push(getSaga(m.effects, m));
     }
   }
 
-  const store = createStore({
-    reducers: createReducer(),
-    initialState: hooksAndOpts.initialState || {},
-    createOpts,
-    sagaMiddleware,
-    promiseMiddleware,
-  });
+  const store = createStore({ reducers, initialState: {}, middlewares, extraEnhancers: [] });
+
+  // 支持store单独加载非model下的saga;
   store.runSaga = sagaMiddleware.run;
-  store.asyncReducers = {};
-
-  const unlisteners = {};
-  for (const m of models) {
-    if (m.subscriptions) {
-      unlisteners[m.namespace] = runSubscription(m.subscriptions, m, app, onError);
-    }
-  }
 
   sagas.forEach(sagaMiddleware.run);
   return store;
 }
 
-function getReducer(reducers, modelState) {
-
-}
-
-function getSaga(effect, model) {
-
-}
-
-// createStore(
-//   createRootReducer,
-//   compose(
-//     applyMiddleware(sagaMiddleware),
-//     window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-//   )
-// )
-
 export default create;
-
