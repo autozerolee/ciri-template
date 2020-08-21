@@ -27,7 +27,7 @@ function create(models) {
   const reducers = {};
 
   for (const m of models) {
-    reducers[m.namespace] = getReducer(m.reducers, m.state);
+    reducers[m.namespace] = getReducer(m.reducers, m.state, m);
     if(m.effects && m.effects.main) {
       sagas.push(getSaga(m.effects, m));
     }

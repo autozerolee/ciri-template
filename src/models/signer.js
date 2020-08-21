@@ -1,5 +1,4 @@
-import { call, put, takeEvery } from 'redux-saga/effects';
-import * as ActionTypes from './actionTypes';
+import { call, put, takeLatest } from 'redux-saga/effects';
 import { signIn, signOut } from '../services/signer';
 
 export default {
@@ -10,37 +9,27 @@ export default {
   },
   effects: {
     *main() {
-      yield takeEvery('signer/signin', this.signIn);
+      yield takeLatest('signer/signin', this.signIn);
+      yield takeLatest('signer/signout', this.signOut);
     },
     *signIn(action) {
       const { loginName } = action.payload;
       yield put({ type: 'showLoading' });
-      const res = yield call(signIn, loginName); // promise
-      console.log(res);
-      // if(res && res.success) {
-      //   let userInfo = res.data;
-      //   yield sessionStorage.setItem('@INFO', JSON.stringify(userInfo));
-      //   yield put({ 
-      //     type: ActionTypes.SIGNER_SIGN_IN,
-      //     payload: userInfo
-      //   });
-      //   resolve();
-      // }else {
-      //   reject(data);
-      // }
-    },
-    *signOut({ payload }) {
-      const { resolve, reject } = payload;
-      const res = yield call(signOut);
-      if(res && res.success) {
-        yield sessionStorage.removeItem('@INFO');
-        yield put({
-          type: ActionTypes.SIGNER_SIGN_OUT
+      try {
+        const res = yield call(signIn, loginName);
+        yield sessionStorage.setItem('@INFO', JSON.stringify(res));
+        yield put({ 
+          type: "signer/signInSuccess",
+          payload: res
         });
-        resolve(); // maybe history to login
-      }else {
-        reject(data)
+      } catch(err) {
+        yield put({ type: 'system/error', payload: JSON.stringify(err) });
       }
+    },
+    *signOut() {
+      const res = yield call(signOut);
+      yield sessionStorage.removeItem('@INFO');
+      yield put({ type: "signer/signOutSuccess"});
     }
   },
   reducers: {

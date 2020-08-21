@@ -2,9 +2,10 @@
  * getAllReducers
  * @param {Object} handlers { "action": handler }
  * @param {Object} defaultState 
+ * @param {Object} model
  * @returns reducers
  */
-function handleActions(handlers, defaultState) {
+function handleActions(handlers, defaultState, model) {
   // 返回 case 判断的函数，actionType === action.type
   function _handleAction(actionType, reducer = (val) => val) {
     // real reduce
@@ -26,7 +27,9 @@ function handleActions(handlers, defaultState) {
       return modelReducer
     }
   }
-  const reducers = Object.keys(handlers).map(type => _handleAction(type, handlers[type]));
+  const reducers = Object.keys(handlers).map(type => 
+    _handleAction(`${model.namespace}/${type}`, handlers[type])
+  );
   const reduce = _reduceReducers(...reducers);
   return (state = defaultState, action) => reduce(state, action)
 }
@@ -37,13 +40,13 @@ function handleActions(handlers, defaultState) {
  * @param {Object} state model默认state
  * @returns Function reducer
  */
-export default function getReducer(reducers, state) {
+export default function getReducer(reducers, state, model) {
   // reducers 为数组时，[reducers, enhanceReducers]
   if(Array.isArray(reducers)) {
     const enhancers = reducers[1];
     const _reducers = reducers[0];
-    return enhancers(handleActions(_reducers, state))
+    return enhancers(handleActions(_reducers, state, model))
   }else {
-    return handleActions(reducers || {}, state);
+    return handleActions(reducers || {}, state, model);
   }
 }
